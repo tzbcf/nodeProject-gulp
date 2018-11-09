@@ -1,9 +1,12 @@
-# nodeProject-gulp
-
-
-这是一个Node后端工程项目的打包；支持后端工程es6,es7的语法打包！
-
-
+const gulp         = require('gulp'),
+    clean        = require('gulp-clean'),
+    uglify       = require('gulp-uglify'),
+    pump         = require('pump'),
+    sequence     = require('run-sequence'),
+    babel        = require('gulp-babel'),
+    gutil        = require('gulp-util'),
+    jsonlint     = require("gulp-jsonlint"),
+    jsonminify = require('gulp-jsonminify2');
 /**
  * src源目录，
  * dist目标打包目录
@@ -12,6 +15,15 @@ const config = {
     src: "extend001-dev",
     dist: "extend001-pro"
 }
+/**
+ * 清理目标目录
+ */
+gulp.task('clean', function(cb) {
+    pump([
+        gulp.src(config.dist),
+        clean()
+    ], cb)
+})
 
 /**
  * 拷贝目录，主要把除js与json文件外的文件拷贝到打包目录
@@ -20,7 +32,6 @@ gulp.task('copy',function(){
     gulp.src([config.src+'/**/*',`!${config.src}/**/*.js`,`!${config.src}/**/*.json`])
         .pipe(gulp.dest(config.dist));
 });
-
 
 /**
  * 执行JS压缩
@@ -37,7 +48,6 @@ gulp.task('js', [], function(cb) {
     })
     .pipe(gulp.dest(config.dist));
 });
-
 
 /**
  * 执行JSON压缩
@@ -58,22 +68,16 @@ gulp.task('jsonPro', ['jsonLint'], () => {
         .pipe(gulp.dest(config.dist))
 })
 
+/**
+ * 监听JS文件变改，即时调用任务执行JS增量打包
+ */
+gulp.task('watch', [], function(cb) {
+    gulp.watch(config.src + "/**/*.js", ['js']);
+});
 
-es7语法中需要.babelrc文件；
-配置项如下：
-
-    {
-    "presets": [
-    "es2015","es2016", "es2017"
-  ],
-  "plugins": [[
-
-    "transform-runtime",
-    {
-      "helpers": false,
-      "polyfill": false,
-      "regenerator": true,
-      "moduleName": "babel-runtime"
-    }
-    ]]
-}
+/**
+ * 开始执行
+ */
+gulp.task('default', function(cb) {
+    sequence('clean','copy', 'jsonPro','js', 'watch', cb);
+});
