@@ -5,8 +5,8 @@
 
 
 /**
- * src源目录，
- * dist目标打包目录
+  src源目录，
+  dist目标打包目录
  **/
 const config = {
     src: "extend001-dev",
@@ -14,7 +14,7 @@ const config = {
 }
 
 /**
- * 拷贝目录，主要把除js与json文件外的文件拷贝到打包目录
+  拷贝目录，主要把除js与json文件外的文件拷贝到打包目录
  **/
 gulp.task('copy',function(){
     gulp.src([config.src+'/**/*',`!${config.src}/**/*.js`,`!${config.src}/**/*.json`])
@@ -23,7 +23,7 @@ gulp.task('copy',function(){
 
 
 /**
- * 执行JS压缩
+  执行JS压缩
  **/
 gulp.task('js', [], function(cb) {
     gulp.src([`${config.src}/**/*.js`])
@@ -40,7 +40,7 @@ gulp.task('js', [], function(cb) {
 
 
 /**
- * 执行JSON压缩
+  执行JSON压缩
  **/
 gulp.task('jsonLint', () => {
     gulp.src([`${config.src}/**/*.json`]),

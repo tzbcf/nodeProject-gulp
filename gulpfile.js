@@ -6,14 +6,15 @@ const gulp         = require('gulp'),
     babel        = require('gulp-babel'),
     gutil        = require('gulp-util'),
     jsonlint     = require("gulp-jsonlint"),
-    jsonminify = require('gulp-jsonminify2');
+    jsonminify = require('gulp-jsonminify2'),
+    eslint = require('gulp-eslint');
 /**
  * src源目录，
  * dist目标打包目录
  */
 const config = {
-    src: "extend001-dev",
-    dist: "extend001-pro"
+    src: "gateway2",
+    dist: "gateway1"
 }
 /**
  * 清理目标目录
@@ -38,6 +39,9 @@ gulp.task('copy',function(){
  */
 gulp.task('js', [], function(cb) {
     gulp.src([`${config.src}/**/*.js`])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError())
     .pipe(babel())
     .pipe(babel({
         plugins: ['transform-runtime']        // babel-plugin-transform-runtime 在这里使用;
